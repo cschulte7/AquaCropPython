@@ -15,26 +15,26 @@ import pandas as pd
 from aquacrop.core_Guar import *
 from aquacrop.classes_Guar import *
 
-weather = pd.read_csv('GuarWeather_Clovis.csv')
+weather = pd.read_csv('GuarWeather_Clovis_2018.csv')
 
-with open('GuarWeather_Clovis.txt', 'w') as f: weather.to_string(f, col_space = 10, index=False, justify = 'left') # Prepares the weather data that is in the csv to the format that the aquacrop code needs it in (ten spaces between each value)
+with open('GuarWeather_Clovis_2018.txt', 'w') as f: weather.to_string(f, col_space = 10, index=False, justify = 'left') # Prepares the weather data that is in the csv to the format that the aquacrop code needs it in (ten spaces between each value)
 
-wdf = prepare_weather('GuarWeather_Clovis.txt')
+wdf = prepare_weather('GuarWeather_Clovis_2018.txt')
+
 print(wdf)
 
+soil = SoilClass('ClayLoamGuarClovis2018')
 
-soil = SoilClass('ClayLoamGuarClovis')
+crop = CropClass('Guar2018', PlantingDate='06/15',HarvestDate='11/16')
 
-crop = CropClass('Guar', PlantingDate='06/15',HarvestDate='05/09')
-
-model = AquaCropModel('2018/06/15','2020/09/05', wdf,soil,crop) # (SimStartTime,SimEndTime,wdf,Soil,Crop...)
+model = AquaCropModel('2018/06/15','2018/11/16', wdf,soil,crop) # (SimStartTime,SimEndTime,wdf,Soil,Crop...)
 
 # print(wdf.Date.iloc[0])
 
 
-model.initialize()
+model.initialize() # Had to change the inputs to be GDD... even though they definitely are not in GDD but that is what Maize used and it worked
 
-# model.step(till_termination=True)
+model.step(till_termination=True)
 # final = model.Outputs.Final; final
 # final.Yield.plot()
 # print(final)

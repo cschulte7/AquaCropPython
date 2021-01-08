@@ -33,15 +33,15 @@ print(wdf)
 # df_new.to_csv('sample_text_file_new.txt', header=True, index=None)
 
 
-soil = SoilClass('ClayLoamGuarClovis')
+soil = SoilClass('ClayLoamGuarClovis2018')
 
-crop = CropClass('Guar', PlantingDate='06/15',HarvestDate='05/09')
+crop = CropClass('Guar2018', PlantingDate='06/15',HarvestDate='05/09')
 
 # Checks that the date is still in the correct location for AquaCrop to read it
 print(wdf.Date.iloc[0])
 
 
-model = AquaCropModel('2018/06/15','2020/09/05', wdf,soil,crop) # (SimStartTime,SimEndTime,wdf,Soil,Crop...)
+model = AquaCropModel('2018/06/15','2020/06/15', wdf,soil,crop) # (SimStartTime,SimEndTime,wdf,Soil,Crop...)
 
 
 # Removes first column in the text file (the blank one)
