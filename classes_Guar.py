@@ -230,7 +230,6 @@ class SoilClass:
         if soilType == 'custom':
             self.create_df(dz)
 
-
         elif soilType == 'Clay':
             self.CN = 77
             self.CalcCN = 0
@@ -247,7 +246,7 @@ class SoilClass:
             self.create_df(dz)
             self.add_layer(sum(dz), 0.23, 0.39, 0.5, 125, 100)
             
-        elif soilType == 'ClayLoamGuarClovis': # Clovis data
+        elif soilType == 'ClayLoamGuarClovis2018': # Clovis data from 2018
             self.CN = 72 
             self.CalcCN = 0
             self.REW = 12
@@ -658,62 +657,85 @@ class CropClass:
         self.bsted = 0.000138 # WP co2 adjustment parameter given by Steduto et al. 2007
         self.bface = 0.001165 # WP co2 adjustment parameter given by FACE experiments
 
-        if c_name == 'Guar':
+        if c_name == 'Guar2018':
 
-            self.Name = 'Guar'
+            self.Name = 'Guar2018'
 
             # added in Read_Model_Paramaters
             self.CropType= 3 # Crop Type (1 = Leafy vegetable, 2 = Root/tuber, 3 = Fruit/grain)
             self.PlantMethod= 1 # Planting method (0 = Transplanted, 1 =  Sown)
-            self.CalendarType= 1 # Calendar Type (1 = Calendar days, 2 = Growing degree days)
+            self.CalendarType= 2 # Calendar Type (1 = Calendar days, 2 = Growing degree days)
 
             self.SwitchGDD= 0 # Convert calendar to GDD mode if inputs are given in calendar days (0 = No; 1 = Yes)
 
             self.PlantingDate= PlantingDate # Planting Date (mm/dd)
             self.HarvestDate= HarvestDate # Latest Harvest Date (mm/dd)
 
-
-            self.Emergence = 80 # Growing degree/Calendar days from sowing to emergence/transplant recovery
-            self.MaxRooting = 1420 # Growing degree/Calendar days from sowing to maximum rooting
-            self.Senescence = 1420 # Growing degree/Calendar days from sowing to senescence
-            self.Maturity = 1670 # Growing degree/Calendar days from sowing to maturity
-            self.HIstart = 850 # Growing degree/Calendar days from sowing to start of yield formation
-            self.Flowering = 190 # Duration of flowering in growing degree/calendar days (-999 for non-fruit/grain crops)
-            self.YldForm = 775 # Duration of yield formation in growing degree/calendar days
-            self.GDDmethod = 2 # Growing degree day calculation method
-            self.Tbase = 8 # Base temperature (degC) below which growth does not progress
-            self.Tupp = 30 # Upper temperature (degC) above which crop development no longer increases
+# 2018 only, pre-irrigation and full treatment
+            self.Emergence = 80 # Growing degree/Calendar days from sowing to emergence/transplant recovery -> 10 to 15 days
+            self.MaxRooting = 55 # Growing degree/Calendar days from sowing to maximum rooting -> end of development stage
+            self.Senescence = 90 # Growing degree/Calendar days from sowing to senescence
+            self.Maturity = 115 # Growing degree/Calendar days from sowing to maturity
+# Check if percentage or decimal
+            self.HIstart = 0.23 # Growing degree/Calendar days from sowing to start of yield formation
+            
+            self.Flowering = 49 # Duration of flowering in growing degree/calendar days (-999 for non-fruit/grain crops)
+            self.YldForm = 85 # Duration of yield formation in growing degree/calendar days
+        
+            self.GDDmethod = 1 # Growing degree day calculation method -> What does this mean?
+            
+            self.Tbase = 10 # Base temperature (degC) below which growth does not progress
+            self.Tupp = 50 # Upper temperature (degC) above which crop development no longer increases
             self.PolHeatStress = 1 # Pollination affected by heat stress (0 = No, 1 = Yes)
+            
+    # Look up somewhere
             self.Tmax_up = 40 # Maximum air temperature (degC) above which pollination begins to fail
             self.Tmax_lo = 45 # Maximum air temperature (degC) at which pollination completely fails
             self.PolColdStress = 1 # Pollination affected by cold stress (0 = No, 1 = Yes)
             self.Tmin_up = 10 # Minimum air temperature (degC) below which pollination begins to fail
             self.Tmin_lo = 5 # Minimum air temperature (degC) at which pollination completely fails
+            
+            
             self.TrColdStress = 1 # Transpiration affected by cold temperature stress (0 = No, 1 = Yes)
+# Check later 
             self.GDD_up = 12 # Minimum growing degree days (degC/day) required for full crop transpiration potential
             self.GDD_lo = 0 # Growing degree days (degC/day) at which no crop transpiration occurs
-            self.Zmin = 0.3 # Minimum effective rooting depth (m)
-            self.Zmax = 1.7 # Maximum rooting depth (m)
+        
+            self.Zmin = 0.15 # Minimum effective rooting depth (m)
+            self.Zmax = 0.82 # Maximum rooting depth (m)
+# Look into this more -> Look this up 
             self.fshape_r = 1.3 # Shape factor describing root expansion
+# Look them up in Winds
             self.SxTopQ = 0.0480 # Maximum root water extraction at top of the root zone (m3/m3/day)
             self.SxBotQ = 0.0117 # Maximum root water extraction at the bottom of the root zone (m3/m3/day)
+# Estimate this based on seed size
             self.SeedSize = 6.5 # Soil surface area (cm2) covered by an individual seedling at 90% emergence
-            self.PlantPop = 75_000 # Number of plants per hectare
-            self.CCx = 0.96 # Maximum canopy cover (fraction of soil cover)
+            
+            self.PlantPop = 240000 # Number of plants per hectare
+            self.CCx = 0.90 # Maximum canopy cover (fraction of soil cover)
+# Estimate / look up -> Slow decline, use a small fraction 
             self.CDC = 0.01 # Canopy decline coefficient (fraction per GDD/calendar day)
             self.CGC = 0.0125 # Canopy growth coefficient (fraction per GDD)
-            self.Kcb = 1.05 # Crop coefficient when canopy growth is complete but prior to senescence
-            self.fage = 0.3 #  Decline of crop coefficient due to ageing (%/day)
-            self.WP = 33.7 # Water productivity normalized for ET0 and C02 (g/m2)
+            
+            self.Kcb = 1.00 # Crop coefficient when canopy growth is complete but prior to senescence
+# Only 20 days, estimate 10 or 15%
+            self.fage = 0.1 #  Decline of crop coefficient due to ageing (%/day)
+            
+            self.WP = 17 # Water productivity normalized for ET0 and C02 (g/m2)
+# Estimate 100% 
             self.WPy = 100 # Adjustment of water productivity in yield formation stage (% of WP)
-            self.fsink = 0.5 # Crop performance under elevated atmospheric CO2 concentration (%/100)
-            self.HI0 = 0.48 # Reference harvest index
+            
+            self.fsink = 0.69 # Crop performance under elevated atmospheric CO2 concentration (%/100)
+            self.HI0 = 0.30 # Reference harvest index
             self.dHI_pre = 0 # Possible increase of harvest index due to water stress before flowering (%)
+# Look into this 
             self.a_HI = 7 # Coefficient describing positive impact on harvest index of restricted vegetative growth during yield formation
             self.b_HI = 3 # Coefficient describing negative impact on harvest index of stomatal closure during yield formation
             self.dHI0 = 15 # Maximum allowable increase of harvest index above reference value
+            
             self.Determinant = 1 # Crop Determinancy (0 = Indeterminant, 1 = Determinant)
             self.exc = 50 # Excess of potential fruits
+# No water stress -> full irrigation, look into what these mean. See if there is a way to make it a compacted set and not a complex one
             self.p_up1 = 0.14 # Upper soil water depletion threshold for water stress effects on affect canopy expansion
             self.p_up2 = 0.69 # Upper soil water depletion threshold for water stress effects on canopy stomatal control
             self.p_up3 = 0.69 # Upper soil water depletion threshold for water stress effects on canopy senescence
@@ -727,8 +749,9 @@ class CropClass:
             self.fshape_w3 = 2.7 # Shape factor describing water stress effects on canopy senescence
             self.fshape_w4 = 1 # Shape factor describing water stress effects on pollination
 
+# Have to change this to ELIF so the first if statement works
 
-        if c_name == 'Maize':
+        elif c_name == 'Maize':
 
             self.Name = 'Maize'
 
